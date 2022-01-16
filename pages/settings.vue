@@ -19,7 +19,7 @@
       enter-active-class="animate__animated animate__fadeInRightBig"
       leave-active-class="animate__animated animate__zoomOutRight"
     >
-      <modal-component v-bind:opened="editing" full>
+      <modal-component full v-if="editing">
         <list-modifier @closeModal="closeModal" />
       </modal-component>
     </transition>
@@ -51,10 +51,11 @@ export default {
     return { editing: false }
   },
   methods: {
-    async selectList(listName) {
+    selectList(listName) {
       if (this.activeList === listName) {
-        this.getItemsOfList()
-        this.editing = true
+        this.getItemsOfList().then(() => {
+          this.editing = true
+        })
       } else {
         this.$store.commit('list/rename', listName)
       }

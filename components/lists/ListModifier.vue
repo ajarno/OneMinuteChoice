@@ -29,15 +29,15 @@
         leave-to-class="opacity-0 -translate-x-full"
         tag="div"
         class="flex flex-col space-y-4"
-        @before-leave="beforeLeave"
       >
         <article
           v-for="(item, index) in items"
-          v-bind:key="item.index + ' ' + item.title"
-          class="flex items-center p-2 bg-white bg-opacity-15 rounded-2xl shadow-md transition-all duration-300"
+          v-bind:key="index + ' ' + item.title"
+          class="flex items-center px-4 py-1.5 cursor-pointer bg-white bg-opacity-25 rounded-full ring-neutral ring-2 ring-opacity-10 transition-all duration-300"
+          @click="() => {}"
         >
           <div class="flex-1">
-            <header class="text-lg text-gray-900 font-semibold">
+            <header class="text-lg font-medium">
               {{ item.title }}
             </header>
             <div>{{ item.description }}</div>
@@ -50,6 +50,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              opacity="0.6"
               class="h-6 w-6"
             >
               <path
@@ -93,14 +94,6 @@ export default {
     },
     removeItem(index) {
       this.$store.commit('list/removeItemUsingIndex', index)
-    },
-    beforeLeave(el) {
-      const { marginLeft, marginTop, width, height } =
-        window.getComputedStyle(el)
-      el.style.left = `${el.offsetLeft - parseFloat(marginLeft, 10)}px`
-      el.style.top = `${el.offsetTop - parseFloat(marginTop, 10)}px`
-      el.style.width = width
-      el.style.height = height
     },
   },
 }

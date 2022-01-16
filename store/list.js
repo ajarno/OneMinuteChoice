@@ -9,7 +9,7 @@ export const mutations = {
     state.title = listName
   },
   addItem(state, item) {
-    state.items.unshift(item)
+    state.items.push(item)
   },
   removeItem(state, item) {
     state.items.splice(state.items.indexOf(item), 1)
