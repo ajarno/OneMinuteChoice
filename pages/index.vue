@@ -1,8 +1,9 @@
-<template>
-</template>
+<template></template>
 
 <script>
 export default {
-  name: 'IndexPage',
+  async asyncData({ redirect }) {
+    redirect('/make-a-choice')
+  },
 }
 </script>

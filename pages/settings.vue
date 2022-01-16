@@ -5,67 +5,81 @@
         v-for="list in lists"
         :key="list.title"
         v-bind:set="(checked = list.title === activeList)"
-        class="mb-5"
-        @click="activeList = list.title"
+        class="group mb-5"
+        @click="() => selectList(list.title)"
       >
-        <div
-          :class="[
-            checked ? 'bg-accent-focus bg-opacity-75 text-white ' : 'bg-white ',
-          ]"
-          class="relative flex px-5 py-4 rounded-lg shadow-md cursor-pointer focus:outline-none group-hover:ring-2 group-hover:ring-offset-2 group-hover:ring-offset-accent group-hover:ring-white group-hover:ring-opacity-60 group-focus:ring-2 group-focus:ring-offset-2 group-focus:ring-offset-accent group-focus:ring-white group-focus:ring-opacity-60"
-        >
-          <div class="flex items-center justify-between w-full">
-            <div class="flex items-center">
-              <div class="text-sm">
-                <p
-                  :class="checked ? 'text-white' : 'text-gray-900'"
-                  class="font-medium"
-                >
-                  {{ list.title }}
-                </p>
-                <span
-                  v-if="list.items"
-                  :class="
-                    checked ? 'text-white text-opacity-70' : 'text-gray-500'
-                  "
-                  class="inline"
-                >
-                  <span>{{ list.items.length }} éléments</span>
-                </span>
-              </div>
-            </div>
-            <div v-show="checked" class="flex-shrink-0 text-white">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="12" fill="#fff" fill-opacity="0.2" />
-                <path
-                  d="M7 13l3 3 7-7"
-                  stroke="#fff"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <list-component
+          :title="list.title"
+          :items="list.items"
+          v-bind:checked="checked"
+        />
       </div>
     </div>
+    <transition
+      enter-active-class="animate__animated animate__fadeInRightBig"
+      leave-active-class="animate__animated animate__zoomOutRight"
+    >
+      <modal-component v-bind:opened="editing" full>
+        <list-modifier @closeModal="closeModal" />
+      </modal-component>
+    </transition>
   </div>
 </template>
 
 <script>
+import ListComponent from '~/components/lists/ListComponent.vue'
+import ListModifier from '~/components/lists/ListModifier.vue'
+import ModalComponent from '~/components/modal/ModalComponent.vue'
+
 export default {
+  components: { ListComponent, ListModifier, ModalComponent },
   async asyncData({ $axios, store }) {
-    const lists = (await $axios.$get(`Lists?view=All`)).records.map(
-      (list) => list.fields
-    )
+    const lists = (await $axios.$get(`Lists?view=All`)).records.map((list) => {
+      let obj = list.fields
+      obj['_id'] = list.id
+      return obj
+    })
     console.log(lists)
     if (
       !Array.from(lists, (list) => list.title).includes(store.state.list.title)
     )
       store.commit('list/init', lists[0])
 
-    return { lists, activeList: store.state.list.title }
+    return { lists }
+  },
+  data() {
+    return { editing: false }
+  },
+  methods: {
+    async selectList(listName) {
+      if (this.activeList === listName) {
+        this.getItemsOfList()
+        this.editing = true
+      } else {
+        this.$store.commit('list/rename', listName)
+      }
+    },
+    async getItemsOfList() {
+      const formula = `listTitle%3D"${this.$store.state.list.title}"`
+      const items = (
+        await this.$axios.$get(`Items?view=All&filterByFormula=${formula}`)
+      ).records.map((list) => {
+        let obj = list.fields
+        obj['_id'] = list.id
+        return obj
+      })
+
+      console.log(items)
+      this.$store.commit('list/defineItems', items)
+    },
+    closeModal() {
+      this.editing = false
+    },
+  },
+  computed: {
+    activeList() {
+      return this.$store.state.list.title
+    },
   },
 }
 </script>
