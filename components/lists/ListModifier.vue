@@ -3,6 +3,7 @@
     <input
       type="text"
       :value="title"
+      ref="inputListTitle"
       class="text-2xl font-bold w-full mb-6 input input-ghost transition-colors focus:ring-base-200 focus:ring-2 focus:bg-white focus:bg-opacity-50"
     />
     <div class="mx-3">
@@ -16,7 +17,7 @@
             v-on:keyup.enter="addItem"
           />
           <button class="btn" @click="addItem">
-            <ph-list-plus :size="18"/>
+            <ph-list-plus :size="18" />
           </button>
         </div>
       </div>
@@ -64,7 +65,7 @@
         </article>
       </transition-group>
       <div class="modal-action">
-        <div class="btn btn-block btn-primary" @click="closeModal">Enregistrer</div>
+        <div class="btn btn-block btn-primary" @click="save">Enregistrer</div>
       </div>
     </div>
   </div>
@@ -84,6 +85,21 @@ export default {
     },
   },
   methods: {
+    save() {
+      this.$store.commit('list/rename', this.$refs.inputListTitle.value)
+
+      this.$axios.$patch(`Lists`, {
+        records: [
+          {
+            id: this.$store.state.list._id,
+            fields: {
+              title: this.$store.state.list.title,
+            },
+          },
+        ],
+      })
+      this.closeModal()
+    },
     closeModal() {
       this.$emit('closeModal')
     },
