@@ -2,6 +2,7 @@ export const state = () => ({
   _id: undefined,
   title: '',
   items: [],
+  allLists: [],
 })
 
 export const mutations = {
