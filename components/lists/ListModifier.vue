@@ -12,11 +12,11 @@
             type="text"
             placeholder="Nouvel élément"
             ref="inputNewItem"
-            class="w-full input transition-colors ring-neutral ring-2 ring-opacity-80 focus:bg-white focus:bg-opacity-50"
+            class="w-full input transition-colors text-base ring-neutral ring-2 ring-opacity-80 focus:bg-white focus:bg-opacity-50"
             v-on:keyup.enter="addItem"
           />
           <button class="btn" @click="addItem">
-            <ph-list-plus />
+            <ph-list-plus :size="18"/>
           </button>
         </div>
       </div>
