@@ -19,7 +19,7 @@
       enter-active-class="animate__animated animate__fadeInRightBig"
       leave-active-class="animate__animated animate__zoomOutRight"
     >
-      <modal-component full v-if="editing">
+      <modal-component full v-if="editing" @closeModal="closeModal">
         <list-modifier @closeModal="closeModal" />
       </modal-component>
     </transition>

@@ -64,7 +64,7 @@
         </article>
       </transition-group>
       <div class="modal-action">
-        <div class="btn btn-block btn-primary" @click="closeModal">Save</div>
+        <div class="btn btn-block btn-primary" @click="closeModal">Enregistrer</div>
       </div>
     </div>
   </div>
