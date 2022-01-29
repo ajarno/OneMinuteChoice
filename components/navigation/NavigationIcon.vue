@@ -3,15 +3,10 @@
     :to="to"
     class="text-gray-400 focus:text-primary-focus hover:text-primary w-full justify-center inline-block text-center pt-2 pb-1"
   >
-    <div
-      class="icon inline-block fill-current"
-    >
+    <div class="icon inline-block fill-current">
       <slot></slot>
     </div>
-    <span
-      class="tab block text-xs text-current"
-      >{{ title }}</span
-    >
+    <span class="tab block text-xs text-current">{{ title }}</span>
   </NuxtLink>
 </template>
 
